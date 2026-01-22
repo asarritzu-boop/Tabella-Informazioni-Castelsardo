@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabella Informazioni Castelsardo</title>
+<meta name="theme-color" content="#b2ebf2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    background: radial-gradient(circle at center, #ffffff 60%, #b2ebf2 100%); 
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra tutto orizzontalmente */
+    text-align: center;
+    overflow-y: auto; /* Abilita lo scroll ovunque */
+    -webkit-overflow-scrolling: touch; /* Scroll fluido su iPhone */
+  }
+
+  header { 
+    padding-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  #main-icon { 
+    max-width: 85px; 
+    height: auto; 
+    margin-bottom: 15px; 
+  }
+
+  h1 { 
+    color: #0056b3; 
+    font-size: 1.6rem; 
+    font-weight: 700;
+    margin: 0; 
+    padding: 0 20px;
+    text-transform: uppercase; 
+    line-height: 1.1;
+    box-sizing: border-box;
+  }
+
+  /* Area Contenuto */
+  #content-area, #files-view { 
+    width: 90%; 
+    max-width: 400px; 
+    margin-top: 20px; /* Ridotto da 30 a 20 */
+    margin-bottom: 10px; /* Aggiunto un margine piccolo sotto */
+    flex-grow: 0; /* Impedisce all'area di espandersi troppo */
+  }
+
+  #files-view {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .folder-btn, .file-btn {
+    display: block; 
+    width: 100%; 
+    padding: 16px; 
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-width: 3px; 
+    border-style: solid; 
+    border-radius: 15px; 
+    font-size: 1rem; 
+    font-weight: 700; 
+    color: #333;
+    text-decoration: none; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-sizing: border-box;
+  }
+
+  /* Centratura Loader */
+  #loader { 
+    width: 100%;
+    margin-top: 100px; 
+    font-weight: bold; 
+    color: #0056b3;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Pulsanti inferiori */
+  .action-row {
+    display: flex; 
+    justify-content: center; 
+    gap: 15px;
+    padding: 10px 20px 30px 20px; /* Ridotto il padding superiore */
+    width: 90%;
+    max-width: 400px;
+    margin: 0 auto; /* Centra la riga */
+    /* Rimuoviamo margin-top: auto per evitare che vengano spinti troppo giù */
+  }
+
+  .special-btn {
+    flex: 1; 
+    padding: 14px; 
+    border-radius: 12px; 
+    text-decoration: none;
+    font-weight: 700; 
+    color: white;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .zoom-btn { background-color: #00acee; }
+  .report-btn { background-color: #4a148c; }
+
+  .back-arrow {
+    font-size: 1.5rem; 
+    cursor: pointer;
+    margin-bottom: 20px;
+    color: #0056b3; 
+    background: #e1f5fe; 
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+  }
+
+  #files-list { width: 100%; }
+</style>
+</head>
+<body>
+    <header>
+      <img id="main-icon" src="iconaweb.png" alt="Icona Web">
+      <h1>Tabella Informazioni<br>Castelsardo</h1>
+    </header>
+
+    <div id="loader">Connessione al Drive...</div>
+
+    <div id="content-area"></div>
+    
+    </body>
+
+    <div id="files-view">
+      <button class="back-arrow" onclick="showHome()">&#8592;</button>
+      <h2 id="current-folder-title" style="margin: 10px 0 20px;"></h2>
+      <div id="files-list" style="width: 90%; max-width: 400px;"></div>
+    </div>
+
+    <div class="action-row" id="footer-actions">
+      <a href="https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09" class="special-btn zoom-btn" target="_blank">ZOOM</a>
+      <a href="https://forms.gle/hdLX9eyWfX8M3WGG6" class="special-btn report-btn" target="_blank">RAPPORTINO</a>
+    </div>
+
+    <script>
+      // *** INCOLLA QUI IL TUO URL DI GOOGLE APPS SCRIPT ***
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfkUp1NPrLdhLNjWhlyzBj--WhKLCIOt8xhwDd1MErMWUq0NLG64i0JtGXcrQqnVcO/exec";
+
+      var allData = {};
+
+      async function fetchData() {
+        try {
+          // Fetch usando l'API
+          const response = await fetch(SCRIPT_URL);
+          const data = await response.json();
+          renderApp(data);
+        } catch (error) {
+          document.getElementById('loader').innerText = "Errore caricamento dati.";
+          console.error(error);
+        }
+      }
+
+      function renderApp(data) {
+        allData = data;
+        document.getElementById('loader').style.display = 'none';
+        
+        var container = document.getElementById('content-area');
+        container.innerHTML = '';
+        
+        data.folders.forEach(function(folder, index) {
+          var btn = document.createElement('div');
+          btn.className = 'folder-btn';
+          btn.style.borderColor = folder.color;
+          btn.innerText = folder.name;
+          btn.onclick = function() { openFolder(index); };
+          container.appendChild(btn);
+        });
+      }
+
+function openFolder(index) {
+        var folder = allData.folders[index];
+        
+        // Nascondi la home
+        document.getElementById('content-area').style.display = 'none';
+        document.getElementById('footer-actions').style.display = 'none';
+        // Mostra la vista file
+        document.getElementById('files-view').style.display = 'flex'; 
+        
+        document.getElementById('current-folder-title').innerText = folder.name;
+        var list = document.getElementById('files-list');
+        list.innerHTML = '';
+
+        if (!folder.files || folder.files.length === 0) {
+          list.innerHTML = '<p style="margin-top:20px; font-weight:bold; color:#666;">Nessun documento presente.</p>';
+        } else {
+          folder.files.forEach(function(file) {
+            var a = document.createElement('a');
+            a.className = 'file-btn';
+            // Forza il colore del bordo grigio chiaro per i file
+            a.style.border = '2px solid #e0e0e0';
+            a.href = file.url;
+            a.target = '_blank';
+            a.innerHTML = '<span style="font-size:1.4rem;">' + file.icon + '</span> ' + file.name;
+            list.appendChild(a);
+          });
+        }
+      }
+
+      function showHome() {
+        document.getElementById('files-view').style.display = 'none';
+        document.getElementById('content-area').style.display = 'block';
+        document.getElementById('footer-actions').style.display = 'flex';
+      }
+
+      // Registrazione Service Worker per PWA
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('Service Worker registrato'));
+      }
+
+      // Avvia caricamento
+      fetchData();
+    </script>
+</body>
+</html>
