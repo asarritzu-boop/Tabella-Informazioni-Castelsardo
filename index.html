@@ -244,9 +244,9 @@ function openFolder(index) {
 
       // Registrazione Service Worker per PWA
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('Service Worker registrato'));
-      }
+  navigator.serviceWorker.register('./sw.js')
+  .then(() => console.log('Service Worker registrato correttamente'));
+}
 
       // Avvia caricamento
       fetchData();
