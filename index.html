@@ -188,9 +188,11 @@
         container.innerHTML = ''; // Pulisce vecchio contenuto
 
         if(device === 'iphone') {
+          // Mostra immagine per iPhone
           container.innerHTML = '<img src="iphone.png" id="tutorial-media" alt="Istruzioni iPhone">';
         } else {
-          container.innerHTML = '<video src="android.mp4" id="tutorial-media" controls autoplay></video>';
+          // Utilizza il nuovo nome file per Android
+          container.innerHTML = '<img src="xandroid.png" id="tutorial-media" alt="Istruzioni Android">';
         }
         overlay.style.display = 'flex';
       }
