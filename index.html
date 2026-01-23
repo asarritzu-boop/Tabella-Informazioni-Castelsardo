@@ -47,18 +47,39 @@
 
   #loader { margin-top: 100px; font-weight: bold; color: #0056b3; font-size: 1.2rem; }
 
-  /* Footer */
+  /* Footer con Griglia a 2 Colonne */
   .footer-container { width: 90%; max-width: 400px; margin-top: 30px; padding-bottom: 40px; }
-  .action-row { display: flex; gap: 12px; margin-bottom: 12px; }
+  
+  .action-grid { 
+    display: flex; 
+    gap: 12px; 
+    margin-bottom: 12px; 
+  }
+  
+  .action-column { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+  }
+
   .special-btn {
-    flex: 1; padding: 14px; border-radius: 12px; text-decoration: none;
+    width: 100%;
+    padding: 14px; border-radius: 12px; text-decoration: none;
     font-weight: 700; color: white; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     border: none; cursor: pointer; text-transform: uppercase;
+    display: flex; align-items: center; justify-content: center;
+    box-sizing: border-box;
   }
+
+  /* Colori Pulsanti */
   .zoom-btn { background-color: #00acee; }
+  .invite-btn { background-color: #0086b3; } /* Azzurro per Invita */
   .report-btn { background-color: #4a148c; }
+  .jw-btn { background-color: #4a6da7; } /* Azzurro per JW.ORG */
+
   .install-visible-btn {
-    display: block; width: 80%; margin: 0 auto; background-color: #f0f4f8; border: 2px solid #cfd8dc; 
+    display: block; width: 80%; margin: 10px auto 0; background-color: #f0f4f8; border: 2px solid #cfd8dc; 
     color: #546e7a; padding: 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
     text-transform: uppercase; cursor: pointer;
   }
@@ -113,9 +134,16 @@
     </div>
 
     <div class="footer-container" id="footer-actions">
-      <div class="action-row">
-        <a href="https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09" class="special-btn zoom-btn" target="_blank">ZOOM</a>
-        <a href="https://forms.gle/hdLX9eyWfX8M3WGG6" class="special-btn report-btn" target="_blank">RAPPORTINO</a>
+      <div class="action-grid">
+        <div class="action-column">
+          <a href="https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09" class="special-btn zoom-btn" target="_blank">ZOOM</a>
+          <button onclick="shareLink()" class="special-btn invite-btn">INVITA</button>
+        </div>
+        
+        <div class="action-column">
+          <a href="https://forms.gle/hdLX9eyWfX8M3WGG6" class="special-btn report-btn" target="_blank">RAPPORTINO</a>
+          <a href="https://www.jw.org" class="special-btn jw-btn" target="_blank">JW.ORG</a>
+        </div>
       </div>
       <button onclick="showInstallScreen()" class="install-visible-btn">Come installare App</button>
     </div>
@@ -181,17 +209,31 @@
         document.getElementById('footer-actions').style.display = 'block';
       }
 
+      // Funzione per Invitare (Condivisione Link Zoom)
+      function shareLink() {
+        const shareData = {
+          title: 'Link Zoom Castelsardo',
+          text: 'Ecco il link per collegarti all\'adunanza:',
+          url: 'https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09'
+        };
+
+        if (navigator.share) {
+          navigator.share(shareData).catch((err) => console.log('Errore:', err));
+        } else {
+          navigator.clipboard.writeText(shareData.url);
+          alert("Link Zoom copiato negli appunti!");
+        }
+      }
+
       // LOGICA POPUP
       function openTutorial(device) {
         const overlay = document.getElementById('tutorial-overlay');
         const container = document.getElementById('media-container');
-        container.innerHTML = ''; // Pulisce vecchio contenuto
+        container.innerHTML = '';
 
         if(device === 'iphone') {
-          // Mostra immagine per iPhone
           container.innerHTML = '<img src="iphone.png" id="tutorial-media" alt="Istruzioni iPhone">';
         } else {
-          // Utilizza il nuovo nome file per Android
           container.innerHTML = '<img src="xandroid.png" id="tutorial-media" alt="Istruzioni Android">';
         }
         overlay.style.display = 'flex';
@@ -200,7 +242,7 @@
       function closeTutorial() {
         const overlay = document.getElementById('tutorial-overlay');
         const container = document.getElementById('media-container');
-        container.innerHTML = ''; // Ferma il video/toglie immagine
+        container.innerHTML = '';
         overlay.style.display = 'none';
       }
 
