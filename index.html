@@ -21,15 +21,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
   body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-    min-height: 100vh;
+    margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; min-height: 100vh;
     background: radial-gradient(circle at center, #ffffff 60%, #b2ebf2 100%); 
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-    text-align: center;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
   }
 
   header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
@@ -53,33 +47,32 @@
 
   #loader { margin-top: 100px; font-weight: bold; color: #0056b3; font-size: 1.2rem; }
 
-  /* Footer e Pulsanti - Avvicinati al contenuto */
-  .footer-container {
-    width: 90%; max-width: 400px; 
-    margin-top: 30px; /* Distanza dal contenuto sopra */
-    padding-bottom: 40px; /* Spazio dal bordo inferiore */
-  }
-
+  /* Footer */
+  .footer-container { width: 90%; max-width: 400px; margin-top: 30px; padding-bottom: 40px; }
   .action-row { display: flex; gap: 12px; margin-bottom: 12px; }
-
   .special-btn {
-    flex: 1; padding: 14px; border-radius: 12px; 
-    text-decoration: none; font-weight: 700; color: white;
-    font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border: none; cursor: pointer;
-    text-transform: uppercase;
+    flex: 1; padding: 14px; border-radius: 12px; text-decoration: none;
+    font-weight: 700; color: white; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border: none; cursor: pointer; text-transform: uppercase;
   }
-
   .zoom-btn { background-color: #00acee; }
   .report-btn { background-color: #4a148c; }
-
-  /* Terzo Pulsante più visibile */
   .install-visible-btn {
-    display: block; width: 80%; margin: 0 auto;
-    background-color: #f0f4f8; border: 2px solid #cfd8dc; 
-    color: #546e7a; padding: 10px; border-radius: 10px;
-    font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-    cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: block; width: 80%; margin: 0 auto; background-color: #f0f4f8; border: 2px solid #cfd8dc; 
+    color: #546e7a; padding: 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; cursor: pointer;
+  }
+
+  /* POPUP MODAL PER TUTORIAL */
+  #tutorial-overlay {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
+  }
+  #tutorial-content { width: 90%; max-width: 400px; position: relative; }
+  #tutorial-media { width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+  .close-popup {
+    margin-top: 20px; padding: 12px 25px; background: #fff; color: #333;
+    border-radius: 30px; font-weight: bold; cursor: pointer; border: none;
   }
 
   .back-arrow {
@@ -102,8 +95,15 @@
     <div id="install-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
         <h2 style="color:#0056b3; font-size: 1.2rem; margin-bottom: 25px;">HAI IPHONE O ANDROID?</h2>
-        <button class="device-btn" style="border-color: #000;" onclick="window.open('iphone.png', '_blank')">📱 iPHONE</button>
-        <button class="device-btn" style="border-color: #3DDC84;" onclick="window.open('android.mp4', '_blank')">🤖 ANDROID</button>
+        <button class="device-btn" style="border-color: #000;" onclick="openTutorial('iphone')">📱 iPHONE</button>
+        <button class="device-btn" style="border-color: #3DDC84;" onclick="openTutorial('android')">🤖 ANDROID</button>
+    </div>
+
+    <div id="tutorial-overlay">
+        <div id="tutorial-content">
+            <div id="media-container"></div>
+            <button class="close-popup" onclick="closeTutorial()">CHIUDI</button>
+        </div>
     </div>
 
     <div id="files-view">
@@ -179,6 +179,27 @@
         document.getElementById('install-view').style.display = 'none';
         document.getElementById('content-area').style.display = 'block';
         document.getElementById('footer-actions').style.display = 'block';
+      }
+
+      // LOGICA POPUP
+      function openTutorial(device) {
+        const overlay = document.getElementById('tutorial-overlay');
+        const container = document.getElementById('media-container');
+        container.innerHTML = ''; // Pulisce vecchio contenuto
+
+        if(device === 'iphone') {
+          container.innerHTML = '<img src="iphone.png" id="tutorial-media" alt="Istruzioni iPhone">';
+        } else {
+          container.innerHTML = '<video src="android.mp4" id="tutorial-media" controls autoplay></video>';
+        }
+        overlay.style.display = 'flex';
+      }
+
+      function closeTutorial() {
+        const overlay = document.getElementById('tutorial-overlay');
+        const container = document.getElementById('media-container');
+        container.innerHTML = ''; // Ferma il video/toglie immagine
+        overlay.style.display = 'none';
       }
 
       fetchData();
