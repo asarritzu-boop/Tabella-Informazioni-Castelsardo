@@ -260,25 +260,39 @@
       }
 
       // LOGICA DATE IMPORTANTI
-      async function openEvents() {
+            async function openEvents() {
         const container = document.getElementById('event-list-container');
         container.innerHTML = '<p style="color:white;">Caricamento eventi...</p>';
         document.getElementById('events-overlay').style.display = 'flex';
 
         try {
+          // Fetch del file JSON con parametro anti-cache
           const response = await fetch('eventi.json?v=' + Date.now());
           const eventi = await response.json();
           container.innerHTML = '';
+
           eventi.forEach(ev => {
             const div = document.createElement('div');
             div.className = 'event-item';
-            div.innerHTML = `<span class="event-date">${ev.data}</span><span class="event-name">${ev.evento}</span>`;
+            
+            // Struttura HTML: Data e Titolo
+            let htmlContent = `
+              <span class="event-date">${ev.data}</span>
+              <span class="event-name">${ev.evento}</span>
+            `;
+
+            // Aggiunge la nota a capo se presente
+            if (ev.note && ev.note.trim() !== "") {
+              htmlContent += `<span style="display:block; margin-top:6px; font-size:0.85rem; color:#555; font-style:italic; line-height:1.2;">${ev.note}</span>`;
+            }
+
+            div.innerHTML = htmlContent;
             container.appendChild(div);
           });
         } catch (error) {
-          container.innerHTML = '<p style="color:white;">Nessun evento programmato al momento o errore di caricamento.</p>';
+          container.innerHTML = '<p style="color:white;">Errore nel caricamento dei dati.</p>';
         }
-      }
+            }
 
       function closeEvents() {
         document.getElementById('events-overlay').style.display = 'none';
