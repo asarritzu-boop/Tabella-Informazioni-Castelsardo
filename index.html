@@ -47,7 +47,6 @@
 
   #loader { margin-top: 100px; font-weight: bold; color: #0056b3; font-size: 1.2rem; }
 
-  /* Footer con Griglia a 2 Colonne */
   .footer-container { width: 90%; max-width: 400px; margin-top: 30px; padding-bottom: 40px; }
   
   .action-grid { 
@@ -74,27 +73,38 @@
 
   /* Colori Pulsanti */
   .zoom-btn { background-color: #00acee; }
-  .invite-btn { background-color: #0086b3; } /* Azzurro per Invita */
+  .invite-btn { background-color: #0086b3; }
   .report-btn { background-color: #4a148c; }
-  .jw-btn { background-color: #4a6da7; } /* Azzurro per JW.ORG */
+  .jw-btn { background-color: #4a6da7; }
 
-  .install-visible-btn {
-    display: block; width: 80%; margin: 10px auto 0; background-color: #f0f4f8; border: 2px solid #cfd8dc; 
+  /* Pulsanti secondari (Grigi) */
+  .secondary-btn {
+    display: block; width: 80%; margin: 10px auto; background-color: #f0f4f8; border: 2px solid #cfd8dc; 
     color: #546e7a; padding: 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
     text-transform: uppercase; cursor: pointer;
   }
 
-  /* POPUP MODAL PER TUTORIAL */
-  #tutorial-overlay {
+  /* POPUP MODAL */
+  #tutorial-overlay, #events-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
   }
   #tutorial-content { width: 90%; max-width: 400px; position: relative; }
   #tutorial-media { width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+  
   .close-popup {
     margin-top: 20px; padding: 12px 25px; background: #fff; color: #333;
     border-radius: 30px; font-weight: bold; cursor: pointer; border: none;
   }
+
+  /* Stile lista eventi */
+  #event-list-container { max-height: 50vh; overflow-y: auto; width: 100%; }
+  .event-item {
+    background: white; margin-bottom: 10px; padding: 15px;
+    border-radius: 10px; text-align: left; border-left: 5px solid #0056b3;
+  }
+  .event-date { font-weight: bold; color: #0056b3; font-size: 0.9rem; display: block; }
+  .event-name { color: #333; margin-top: 4px; display: block; font-weight: 700; }
 
   .back-arrow {
     font-size: 1.5rem; cursor: pointer; margin-bottom: 20px;
@@ -127,6 +137,14 @@
         </div>
     </div>
 
+    <div id="events-overlay">
+        <div id="tutorial-content">
+            <h2 style="color: white; margin-bottom: 20px;">DATE IMPORTANTI</h2>
+            <div id="event-list-container"></div>
+            <button class="close-popup" onclick="closeEvents()">CHIUDI</button>
+        </div>
+    </div>
+
     <div id="files-view">
       <button class="back-arrow" onclick="showHome()">&#8592;</button>
       <h2 id="current-folder-title" style="margin: 10px 0 20px; font-size: 1.3rem;"></h2>
@@ -134,6 +152,8 @@
     </div>
 
     <div class="footer-container" id="footer-actions">
+      <button onclick="openEvents()" class="secondary-btn" style="margin-bottom: 15px;">Date Importanti</button>
+
       <div class="action-grid">
         <div class="action-column">
           <a href="https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09" class="special-btn zoom-btn" target="_blank">ZOOM</a>
@@ -145,7 +165,7 @@
           <a href="https://www.jw.org" class="special-btn jw-btn" target="_blank">JW.ORG</a>
         </div>
       </div>
-      <button onclick="showInstallScreen()" class="install-visible-btn">Come installare App</button>
+      <button onclick="showInstallScreen()" class="secondary-btn">Come installare App</button>
     </div>
 
     <script>
@@ -209,14 +229,12 @@
         document.getElementById('footer-actions').style.display = 'block';
       }
 
-      // Funzione per Invitare (Condivisione Link Zoom)
       function shareLink() {
         const shareData = {
           title: 'Link Zoom Castelsardo',
           text: 'Ecco il link per collegarti all\'adunanza:',
           url: 'https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09'
         };
-
         if (navigator.share) {
           navigator.share(shareData).catch((err) => console.log('Errore:', err));
         } else {
@@ -225,12 +243,10 @@
         }
       }
 
-      // LOGICA POPUP
       function openTutorial(device) {
         const overlay = document.getElementById('tutorial-overlay');
         const container = document.getElementById('media-container');
         container.innerHTML = '';
-
         if(device === 'iphone') {
           container.innerHTML = '<img src="iphone.png" id="tutorial-media" alt="Istruzioni iPhone">';
         } else {
@@ -240,10 +256,32 @@
       }
 
       function closeTutorial() {
-        const overlay = document.getElementById('tutorial-overlay');
-        const container = document.getElementById('media-container');
-        container.innerHTML = '';
-        overlay.style.display = 'none';
+        document.getElementById('tutorial-overlay').style.display = 'none';
+      }
+
+      // LOGICA DATE IMPORTANTI
+      async function openEvents() {
+        const container = document.getElementById('event-list-container');
+        container.innerHTML = '<p style="color:white;">Caricamento eventi...</p>';
+        document.getElementById('events-overlay').style.display = 'flex';
+
+        try {
+          const response = await fetch('eventi.json?v=' + Date.now());
+          const eventi = await response.json();
+          container.innerHTML = '';
+          eventi.forEach(ev => {
+            const div = document.createElement('div');
+            div.className = 'event-item';
+            div.innerHTML = `<span class="event-date">${ev.data}</span><span class="event-name">${ev.evento}</span>`;
+            container.appendChild(div);
+          });
+        } catch (error) {
+          container.innerHTML = '<p style="color:white;">Nessun evento programmato al momento o errore di caricamento.</p>';
+        }
+      }
+
+      function closeEvents() {
+        document.getElementById('events-overlay').style.display = 'none';
       }
 
       fetchData();
