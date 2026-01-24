@@ -30,11 +30,19 @@
   #main-icon { max-width: 85px; height: auto; margin-bottom: 15px; }
   h1 { color: #0056b3; font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
 
-  #content-area, #files-view, #install-view { 
+  /* Stile Barra di Ricerca */
+  #search-container { width: 90%; max-width: 400px; margin-top: 20px; }
+  #search-input {
+    width: 100%; padding: 12px; border-radius: 25px; border: 2px solid #0056b3;
+    font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box;
+    outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  #content-area, #files-view, #install-view, #search-results-view { 
     width: 90%; max-width: 400px; margin-top: 20px; 
   }
 
-  #files-view, #install-view { display: none; flex-direction: column; align-items: center; }
+  #files-view, #install-view, #search-results-view { display: none; flex-direction: column; align-items: center; }
 
   .folder-btn, .file-btn, .device-btn {
     display: block; width: 100%; padding: 16px; margin-bottom: 15px;
@@ -119,9 +127,18 @@
       <h1>Tabella Informazioni<br>Castelsardo</h1>
     </header>
 
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="Cerca un documento..." oninput="handleSearch(this.value)">
+    </div>
+
     <div id="loader">Connessione al Drive...</div>
 
     <div id="content-area"></div>
+
+    <div id="search-results-view">
+      <h2 style="margin: 10px 0 20px; font-size: 1.3rem; color: #0056b3;">Risultati Ricerca</h2>
+      <div id="search-results-list" style="width: 100%;"></div>
+    </div>
 
     <div id="install-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
@@ -197,10 +214,54 @@
         });
       }
 
+      // Funzione di Ricerca
+      function handleSearch(query) {
+        const searchResultsView = document.getElementById('search-results-view');
+        const contentArea = document.getElementById('content-area');
+        const filesView = document.getElementById('files-view');
+        const resultsList = document.getElementById('search-results-list');
+        const footer = document.getElementById('footer-actions');
+
+        if (query.trim() === "") {
+          showHome();
+          return;
+        }
+
+        // Nascondi home e visualizza risultati
+        contentArea.style.display = 'none';
+        filesView.style.display = 'none';
+        footer.style.display = 'none';
+        searchResultsView.style.display = 'flex';
+        resultsList.innerHTML = '';
+
+        let found = false;
+        const searchTerm = query.toLowerCase();
+
+        allData.folders.forEach(folder => {
+          folder.files.forEach(file => {
+            if (file.name.toLowerCase().includes(searchTerm)) {
+              found = true;
+              const a = document.createElement('a');
+              a.className = 'file-btn';
+              a.style.border = '2px solid ' + folder.color;
+              a.href = file.url;
+              a.target = '_blank';
+              a.innerHTML = `<span style="font-size:1.4rem;">${file.icon}</span> ${file.name} <br><small style="color: #888; font-weight: 400;">in ${folder.name}</small>`;
+              resultsList.appendChild(a);
+            }
+          });
+        });
+
+        if (!found) {
+          resultsList.innerHTML = '<p style="color: #666; margin-top: 20px;">Nessun documento trovato.</p>';
+        }
+      }
+
       function openFolder(index) {
         var folder = allData.folders[index];
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
+        document.getElementById('search-results-view').style.display = 'none';
         document.getElementById('files-view').style.display = 'flex'; 
         document.getElementById('current-folder-title').innerText = folder.name;
         var list = document.getElementById('files-list');
@@ -220,13 +281,16 @@
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
         document.getElementById('install-view').style.display = 'flex';
+        document.getElementById('search-results-view').style.display = 'none';
       }
 
       function showHome() {
         document.getElementById('files-view').style.display = 'none';
         document.getElementById('install-view').style.display = 'none';
+        document.getElementById('search-results-view').style.display = 'none';
         document.getElementById('content-area').style.display = 'block';
         document.getElementById('footer-actions').style.display = 'block';
+        document.getElementById('search-input').value = '';
       }
 
       function shareLink() {
@@ -260,13 +324,12 @@
       }
 
       // LOGICA DATE IMPORTANTI
-            async function openEvents() {
+      async function openEvents() {
         const container = document.getElementById('event-list-container');
         container.innerHTML = '<p style="color:white;">Caricamento eventi...</p>';
         document.getElementById('events-overlay').style.display = 'flex';
 
         try {
-          // Fetch del file JSON con parametro anti-cache
           const response = await fetch('eventi.json?v=' + Date.now());
           const eventi = await response.json();
           container.innerHTML = '';
@@ -275,13 +338,11 @@
             const div = document.createElement('div');
             div.className = 'event-item';
             
-            // Struttura HTML: Data e Titolo
             let htmlContent = `
               <span class="event-date">${ev.data}</span>
               <span class="event-name">${ev.evento}</span>
             `;
 
-            // Aggiunge la nota a capo se presente
             if (ev.note && ev.note.trim() !== "") {
               htmlContent += `<span style="display:block; margin-top:6px; font-size:0.85rem; color:#555; font-style:italic; line-height:1.2;">${ev.note}</span>`;
             }
@@ -292,7 +353,7 @@
         } catch (error) {
           container.innerHTML = '<p style="color:white;">Errore nel caricamento dei dati.</p>';
         }
-            }
+      }
 
       function closeEvents() {
         document.getElementById('events-overlay').style.display = 'none';
@@ -301,4 +362,5 @@
       fetchData();
     </script>
 </body>
-</html>
+    </html>
+    
