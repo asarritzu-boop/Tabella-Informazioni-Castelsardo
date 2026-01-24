@@ -20,22 +20,52 @@
     <meta property="og:image" content="https://asarritzu-boop.github.io/Tabella-Informazioni-Castelsardo/icona-512.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  body {
-    margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; min-height: 100vh;
-    background: radial-gradient(circle at center, #ffffff 60%, #b2ebf2 100%); 
-    display: flex; flex-direction: column; align-items: center; text-align: center;
+  :root {
+    --bg-gradient: radial-gradient(circle at center, #ffffff 60%, #b2ebf2 100%);
+    --text-color: #333;
+    --header-color: #0056b3;
+    --btn-bg: rgba(255, 255, 255, 0.85);
+    --card-shadow: rgba(0,0,0,0.05);
   }
 
-  header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-  #main-icon { max-width: 85px; height: auto; margin-bottom: 15px; }
-  h1 { color: #0056b3; font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
+  /* Variabili Dark Mode */
+  body.dark-mode {
+    --bg-gradient: radial-gradient(circle at center, #121212 60%, #1a2a2d 100%);
+    --text-color: #e0e0e0;
+    --header-color: #4fc3f7;
+    --btn-bg: #1e1e1e;
+    --card-shadow: rgba(0,0,0,0.4);
+  }
 
-  /* Stile Barra di Ricerca */
+  body {
+    margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; min-height: 100vh;
+    background: var(--bg-gradient); 
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    color: var(--text-color);
+    transition: background 0.3s ease;
+  }
+
+  header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
+  
+  /* Tasto Dark Mode posizionato in alto a destra */
+  #dark-mode-toggle {
+    position: absolute; top: 15px; right: 15px;
+    background: var(--btn-bg); border: 1px solid var(--header-color);
+    border-radius: 50%; width: 40px; height: 40px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; box-shadow: 0 2px 5px var(--card-shadow);
+    z-index: 10; transition: all 0.3s ease;
+  }
+
+  #main-icon { max-width: 85px; height: auto; margin-bottom: 15px; }
+  h1 { color: var(--header-color); font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
+
   #search-container { width: 90%; max-width: 400px; margin-top: 20px; }
   #search-input {
-    width: 100%; padding: 12px; border-radius: 25px; border: 2px solid #0056b3;
+    width: 100%; padding: 12px; border-radius: 25px; border: 2px solid var(--header-color);
     font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box;
-    outline: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    outline: none; box-shadow: 0 4px 6px var(--card-shadow);
+    background: var(--btn-bg); color: var(--text-color);
   }
 
   #content-area, #files-view, #install-view, #search-results-view { 
@@ -46,50 +76,36 @@
 
   .folder-btn, .file-btn, .device-btn {
     display: block; width: 100%; padding: 16px; margin-bottom: 15px;
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: var(--btn-bg);
     border: 3px solid; border-radius: 15px; 
-    font-size: 1rem; font-weight: 700; color: #333;
-    text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    font-size: 1rem; font-weight: 700; color: var(--text-color);
+    text-decoration: none; box-shadow: 0 4px 10px var(--card-shadow);
     box-sizing: border-box; cursor: pointer;
   }
 
-  #loader { margin-top: 100px; font-weight: bold; color: #0056b3; font-size: 1.2rem; }
+  #loader { margin-top: 100px; font-weight: bold; color: var(--header-color); font-size: 1.2rem; }
 
   .footer-container { width: 90%; max-width: 400px; margin-top: 30px; padding-bottom: 40px; }
   
-  .action-grid { 
-    display: flex; 
-    gap: 12px; 
-    margin-bottom: 12px; 
-  }
-  
-  .action-column { 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 10px; 
-  }
+  .action-grid { display: flex; gap: 12px; margin-bottom: 12px; }
+  .action-column { flex: 1; display: flex; flex-direction: column; gap: 10px; }
 
   .special-btn {
-    width: 100%;
-    padding: 14px; border-radius: 12px; text-decoration: none;
+    width: 100%; padding: 14px; border-radius: 12px; text-decoration: none;
     font-weight: 700; color: white; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     border: none; cursor: pointer; text-transform: uppercase;
-    display: flex; align-items: center; justify-content: center;
-    box-sizing: border-box;
+    display: flex; align-items: center; justify-content: center; box-sizing: border-box;
   }
 
-  /* Colori Pulsanti */
   .zoom-btn { background-color: #00acee; }
   .invite-btn { background-color: #0086b3; }
   .report-btn { background-color: #4a148c; }
   .jw-btn { background-color: #4a6da7; }
 
-  /* Pulsanti secondari (Grigi) */
   .secondary-btn {
-    display: block; width: 80%; margin: 10px auto; background-color: #f0f4f8; border: 2px solid #cfd8dc; 
-    color: #546e7a; padding: 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
-    text-transform: uppercase; cursor: pointer;
+    display: block; width: 80%; margin: 10px auto; background-color: var(--btn-bg); 
+    border: 2px solid #cfd8dc; color: #546e7a; padding: 10px; border-radius: 10px; 
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
   }
 
   /* POPUP MODAL */
@@ -105,24 +121,25 @@
     border-radius: 30px; font-weight: bold; cursor: pointer; border: none;
   }
 
-  /* Stile lista eventi */
   #event-list-container { max-height: 50vh; overflow-y: auto; width: 100%; }
   .event-item {
     background: white; margin-bottom: 10px; padding: 15px;
     border-radius: 10px; text-align: left; border-left: 5px solid #0056b3;
+    color: #333; /* Testo eventi sempre leggibile */
   }
   .event-date { font-weight: bold; color: #0056b3; font-size: 0.9rem; display: block; }
   .event-name { color: #333; margin-top: 4px; display: block; font-weight: 700; }
 
   .back-arrow {
     font-size: 1.5rem; cursor: pointer; margin-bottom: 20px;
-    color: #0056b3; background: #e1f5fe; border: none;
+    color: var(--header-color); background: var(--btn-bg); border: 2px solid var(--header-color);
     border-radius: 50%; width: 50px; height: 50px;
   }
 </style>
 </head>
-<body>
+<body id="body-tag">
     <header>
+      <button id="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Cambia tema">☀️</button>
       <img id="main-icon" src="iconaweb.png" alt="Icona Web">
       <h1>Tabella Informazioni<br>Castelsardo</h1>
     </header>
@@ -136,13 +153,13 @@
     <div id="content-area"></div>
 
     <div id="search-results-view">
-      <h2 style="margin: 10px 0 20px; font-size: 1.3rem; color: #0056b3;">Risultati Ricerca</h2>
+      <h2 style="margin: 10px 0 20px; font-size: 1.3rem;">Risultati Ricerca</h2>
       <div id="search-results-list" style="width: 100%;"></div>
     </div>
 
     <div id="install-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
-        <h2 style="color:#0056b3; font-size: 1.2rem; margin-bottom: 25px;">HAI IPHONE O ANDROID?</h2>
+        <h2 style="font-size: 1.2rem; margin-bottom: 25px;">HAI IPHONE O ANDROID?</h2>
         <button class="device-btn" style="border-color: #000;" onclick="openTutorial('iphone')">📱 iPHONE</button>
         <button class="device-btn" style="border-color: #3DDC84;" onclick="openTutorial('android')">🤖 ANDROID</button>
     </div>
@@ -189,6 +206,26 @@
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfkUp1NPrLdhLNjWhlyzBj--WhKLCIOt8xhwDd1MErMWUq0NLG64i0JtGXcrQqnVcO/exec";
       var allData = {};
 
+      // Inizializzazione Tema
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-mode-toggle').innerText = '🌙';
+      }
+
+      function toggleDarkMode() {
+        const body = document.body;
+        const btn = document.getElementById('dark-mode-toggle');
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+          btn.innerText = '🌙';
+          localStorage.setItem('theme', 'dark');
+        } else {
+          btn.innerText = '☀️';
+          localStorage.setItem('theme', 'light');
+        }
+      }
+
       async function fetchData() {
         try {
           const response = await fetch(SCRIPT_URL);
@@ -214,7 +251,6 @@
         });
       }
 
-      // Funzione di Ricerca
       function handleSearch(query) {
         const searchResultsView = document.getElementById('search-results-view');
         const contentArea = document.getElementById('content-area');
@@ -227,7 +263,6 @@
           return;
         }
 
-        // Nascondi home e visualizza risultati
         contentArea.style.display = 'none';
         filesView.style.display = 'none';
         footer.style.display = 'none';
@@ -253,7 +288,7 @@
         });
 
         if (!found) {
-          resultsList.innerHTML = '<p style="color: #666; margin-top: 20px;">Nessun documento trovato.</p>';
+          resultsList.innerHTML = '<p style="margin-top: 20px;">Nessun documento trovato.</p>';
         }
       }
 
@@ -323,7 +358,6 @@
         document.getElementById('tutorial-overlay').style.display = 'none';
       }
 
-      // LOGICA DATE IMPORTANTI
       async function openEvents() {
         const container = document.getElementById('event-list-container');
         container.innerHTML = '<p style="color:white;">Caricamento eventi...</p>';
@@ -362,5 +396,4 @@
       fetchData();
     </script>
 </body>
-    </html>
-    
+</html>
