@@ -35,7 +35,7 @@
     --title-color: #4fc3f7;
     --btn-bg: rgba(40, 40, 40, 0.9);
     --btn-border: #444;
-    --secondary-btn-text: #ffffff; /* Testo più evidente in modalità notte */
+    --secondary-btn-text: #ffffff;
   }
 
   body {
@@ -47,10 +47,17 @@
   }
 
   header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
-  #main-icon { max-width: 85px; height: auto; margin-bottom: 15px; }
+  
+  /* Modifica Icona: più grande e con ombra superiore/diffusa */
+  #main-icon { 
+    max-width: 110px; 
+    height: auto; 
+    margin-bottom: 15px; 
+    filter: drop-shadow(0px -4px 6px rgba(0,0,0,0.15)) drop-shadow(0px 4px 8px rgba(0,0,0,0.1));
+  }
+  
   h1 { color: var(--title-color); font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
 
-  /* Pulsanti Rotondi Superiori - Modificati con riempimento trasparente */
   .round-btn {
     position: absolute; top: 20px; width: 40px; height: 40px; border-radius: 50%;
     background-color: transparent; 
@@ -59,7 +66,6 @@
     font-size: 1.2rem; font-weight: bold;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10;
-    transition: all 0.2s ease;
   }
   .info-btn { left: 20px; }
   .theme-btn { right: 20px; }
@@ -104,7 +110,6 @@
     text-transform: uppercase; cursor: pointer;
   }
 
-  /* Guida Styles */
   .guide-card {
     background: var(--btn-bg); width: 100%; padding: 15px; border-radius: 15px;
     text-align: left; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
@@ -153,12 +158,12 @@
     <div id="guide-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
         <h2 style="color:var(--title-color); font-size: 1.3rem; margin-bottom: 20px;">GUIDA ALLE FUNZIONI</h2>
-        <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti del Drive.</div>
+        <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti Drive (Cantiere, Territori, ecc).</div>
         <div class="guide-card"><b>Luna / Sole</b> Attiva la Modalità Notte per riposare gli occhi o la Modalità Giorno per massima chiarezza.</div>
         <div class="guide-card"><b>Date Importanti</b> Calendario delle scadenze e degli eventi della congregazione.</div>
-        <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente ZOOM per le adunanze.</div>
+        <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente l'app per le adunanze.</div>
         <div class="guide-card"><b>Pulsante INVITA</b> Condivide rapidamente il link Zoom della congregazione.</div>
-        <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto di servizio.</div>
+        <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto mensile.</div>
         <div class="guide-card"><b>Pulsante JW.ORG</b> Accesso al sito ufficiale dei Testimoni di Geova.</div>
     </div>
 
