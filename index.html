@@ -23,18 +23,19 @@
   :root {
     --bg-gradient: radial-gradient(circle at center, #ffffff 60%, #b2ebf2 100%);
     --text-color: #333;
-    --header-color: #0056b3;
+    --title-color: #0056b3;
     --btn-bg: rgba(255, 255, 255, 0.85);
-    --card-shadow: rgba(0,0,0,0.05);
+    --btn-border: #e0e0e0;
+    --secondary-btn-text: #546e7a;
   }
 
-  /* Variabili Dark Mode */
-  body.dark-mode {
-    --bg-gradient: radial-gradient(circle at center, #121212 60%, #1a2a2d 100%);
-    --text-color: #e0e0e0;
-    --header-color: #4fc3f7;
-    --btn-bg: #1e1e1e;
-    --card-shadow: rgba(0,0,0,0.4);
+  .dark-mode {
+    --bg-gradient: radial-gradient(circle at center, #1a1a1a 60%, #002b36 100%);
+    --text-color: #f0f0f0;
+    --title-color: #4fc3f7;
+    --btn-bg: rgba(40, 40, 40, 0.9);
+    --btn-border: #444;
+    --secondary-btn-text: #ffffff; /* Testo più evidente in modalità notte */
   }
 
   body {
@@ -46,44 +47,39 @@
   }
 
   header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
-  
-  /* Tasto Dark Mode posizionato in alto a destra */
-  #dark-mode-toggle {
-    position: absolute; top: 15px; right: 15px;
-    background: var(--btn-bg); border: 1px solid var(--header-color);
-    border-radius: 50%; width: 40px; height: 40px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem; box-shadow: 0 2px 5px var(--card-shadow);
-    z-index: 10; transition: all 0.3s ease;
-  }
-
   #main-icon { max-width: 85px; height: auto; margin-bottom: 15px; }
-  h1 { color: var(--header-color); font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
+  h1 { color: var(--title-color); font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
 
-  #search-container { width: 90%; max-width: 400px; margin-top: 20px; }
-  #search-input {
-    width: 100%; padding: 12px; border-radius: 25px; border: 2px solid var(--header-color);
-    font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box;
-    outline: none; box-shadow: 0 4px 6px var(--card-shadow);
-    background: var(--btn-bg); color: var(--text-color);
+  /* Pulsanti Rotondi Superiori - Modificati con riempimento trasparente */
+  .round-btn {
+    position: absolute; top: 20px; width: 40px; height: 40px; border-radius: 50%;
+    background-color: transparent; 
+    color: var(--title-color);
+    border: 2px solid var(--title-color); 
+    font-size: 1.2rem; font-weight: bold;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); z-index: 10;
+    transition: all 0.2s ease;
   }
+  .info-btn { left: 20px; }
+  .theme-btn { right: 20px; }
 
-  #content-area, #files-view, #install-view, #search-results-view { 
+  #content-area, #files-view, #install-view, #guide-view { 
     width: 90%; max-width: 400px; margin-top: 20px; 
   }
 
-  #files-view, #install-view, #search-results-view { display: none; flex-direction: column; align-items: center; }
+  #files-view, #install-view, #guide-view { display: none; flex-direction: column; align-items: center; }
 
   .folder-btn, .file-btn, .device-btn {
     display: block; width: 100%; padding: 16px; margin-bottom: 15px;
     background-color: var(--btn-bg);
     border: 3px solid; border-radius: 15px; 
     font-size: 1rem; font-weight: 700; color: var(--text-color);
-    text-decoration: none; box-shadow: 0 4px 10px var(--card-shadow);
+    text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     box-sizing: border-box; cursor: pointer;
   }
 
-  #loader { margin-top: 100px; font-weight: bold; color: var(--header-color); font-size: 1.2rem; }
+  #loader { margin-top: 100px; font-weight: bold; color: var(--title-color); font-size: 1.2rem; }
 
   .footer-container { width: 90%; max-width: 400px; margin-top: 30px; padding-bottom: 40px; }
   
@@ -103,12 +99,18 @@
   .jw-btn { background-color: #4a6da7; }
 
   .secondary-btn {
-    display: block; width: 80%; margin: 10px auto; background-color: var(--btn-bg); 
-    border: 2px solid #cfd8dc; color: #546e7a; padding: 10px; border-radius: 10px; 
-    font-size: 0.75rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+    display: block; width: 80%; margin: 10px auto; background-color: var(--btn-bg); border: 2px solid #cfd8dc; 
+    color: var(--secondary-btn-text); padding: 10px; border-radius: 10px; font-size: 0.75rem; font-weight: 700;
+    text-transform: uppercase; cursor: pointer;
   }
 
-  /* POPUP MODAL */
+  /* Guida Styles */
+  .guide-card {
+    background: var(--btn-bg); width: 100%; padding: 15px; border-radius: 15px;
+    text-align: left; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .guide-card b { color: var(--title-color); display: block; margin-bottom: 5px; text-transform: uppercase; }
+
   #tutorial-overlay, #events-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
@@ -124,43 +126,46 @@
   #event-list-container { max-height: 50vh; overflow-y: auto; width: 100%; }
   .event-item {
     background: white; margin-bottom: 10px; padding: 15px;
-    border-radius: 10px; text-align: left; border-left: 5px solid #0056b3;
-    color: #333; /* Testo eventi sempre leggibile */
+    border-radius: 10px; text-align: left; border-left: 5px solid #0056b3; color: #333;
   }
   .event-date { font-weight: bold; color: #0056b3; font-size: 0.9rem; display: block; }
   .event-name { color: #333; margin-top: 4px; display: block; font-weight: 700; }
 
   .back-arrow {
     font-size: 1.5rem; cursor: pointer; margin-bottom: 20px;
-    color: var(--header-color); background: var(--btn-bg); border: 2px solid var(--header-color);
+    color: var(--title-color); background: #e1f5fe; border: none;
     border-radius: 50%; width: 50px; height: 50px;
   }
 </style>
 </head>
-<body id="body-tag">
+<body>
     <header>
-      <button id="dark-mode-toggle" onclick="toggleDarkMode()" aria-label="Cambia tema">☀️</button>
+      <button class="round-btn info-btn" onclick="showGuide()">?</button>
+      <button class="round-btn theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙</button>
       <img id="main-icon" src="iconaweb.png" alt="Icona Web">
       <h1>Tabella Informazioni<br>Castelsardo</h1>
     </header>
-
-    <div id="search-container">
-      <input type="text" id="search-input" placeholder="Cerca un documento..." oninput="handleSearch(this.value)">
-    </div>
 
     <div id="loader">Connessione al Drive...</div>
 
     <div id="content-area"></div>
 
-    <div id="search-results-view">
-      <h2 style="margin: 10px 0 20px; font-size: 1.3rem;">Risultati Ricerca</h2>
-      <div id="search-results-list" style="width: 100%;"></div>
+    <div id="guide-view">
+        <button class="back-arrow" onclick="showHome()">&#8592;</button>
+        <h2 style="color:var(--title-color); font-size: 1.3rem; margin-bottom: 20px;">GUIDA ALLE FUNZIONI</h2>
+        <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti Drive (Cantiere, Territori, ecc).</div>
+        <div class="guide-card"><b>Luna / Sole</b> Attiva la Modalità Notte per riposare gli occhi o la Modalità Giorno per massima chiarezza.</div>
+        <div class="guide-card"><b>Date Importanti</b> Calendario delle scadenze e degli eventi della congregazione.</div>
+        <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente l'app per le adunanze.</div>
+        <div class="guide-card"><b>Pulsante INVITA</b> Condivide rapidamente il link Zoom della congregazione.</div>
+        <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto mensile.</div>
+        <div class="guide-card"><b>Pulsante JW.ORG</b> Accesso al sito ufficiale dei Testimoni di Geova.</div>
     </div>
 
     <div id="install-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
-        <h2 style="font-size: 1.2rem; margin-bottom: 25px;">HAI IPHONE O ANDROID?</h2>
-        <button class="device-btn" style="border-color: #000;" onclick="openTutorial('iphone')">📱 iPHONE</button>
+        <h2 style="color:var(--title-color); font-size: 1.2rem; margin-bottom: 25px;">HAI IPHONE O ANDROID?</h2>
+        <button class="device-btn" style="border-color: #007aff;" onclick="openTutorial('iphone')">📱 iPHONE</button>
         <button class="device-btn" style="border-color: #3DDC84;" onclick="openTutorial('android')">🤖 ANDROID</button>
     </div>
 
@@ -187,13 +192,11 @@
 
     <div class="footer-container" id="footer-actions">
       <button onclick="openEvents()" class="secondary-btn" style="margin-bottom: 15px;">Date Importanti</button>
-
       <div class="action-grid">
         <div class="action-column">
           <a href="https://jworg.zoom.us/j/85332491412?pwd=V0tjV2JpN2l3UTB3MHl3cHZmTkFVUT09" class="special-btn zoom-btn" target="_blank">ZOOM</a>
           <button onclick="shareLink()" class="special-btn invite-btn">INVITA</button>
         </div>
-        
         <div class="action-column">
           <a href="https://forms.gle/hdLX9eyWfX8M3WGG6" class="special-btn report-btn" target="_blank">RAPPORTINO</a>
           <a href="https://www.jw.org" class="special-btn jw-btn" target="_blank">JW.ORG</a>
@@ -206,24 +209,10 @@
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfkUp1NPrLdhLNjWhlyzBj--WhKLCIOt8xhwDd1MErMWUq0NLG64i0JtGXcrQqnVcO/exec";
       var allData = {};
 
-      // Inizializzazione Tema
-      if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-        document.getElementById('dark-mode-toggle').innerText = '🌙';
-      }
-
-      function toggleDarkMode() {
-        const body = document.body;
-        const btn = document.getElementById('dark-mode-toggle');
-        body.classList.toggle('dark-mode');
-        
-        if (body.classList.contains('dark-mode')) {
-          btn.innerText = '🌙';
-          localStorage.setItem('theme', 'dark');
-        } else {
-          btn.innerText = '☀️';
-          localStorage.setItem('theme', 'light');
-        }
+      function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const btn = document.getElementById('theme-toggle');
+        btn.innerText = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
       }
 
       async function fetchData() {
@@ -251,52 +240,10 @@
         });
       }
 
-      function handleSearch(query) {
-        const searchResultsView = document.getElementById('search-results-view');
-        const contentArea = document.getElementById('content-area');
-        const filesView = document.getElementById('files-view');
-        const resultsList = document.getElementById('search-results-list');
-        const footer = document.getElementById('footer-actions');
-
-        if (query.trim() === "") {
-          showHome();
-          return;
-        }
-
-        contentArea.style.display = 'none';
-        filesView.style.display = 'none';
-        footer.style.display = 'none';
-        searchResultsView.style.display = 'flex';
-        resultsList.innerHTML = '';
-
-        let found = false;
-        const searchTerm = query.toLowerCase();
-
-        allData.folders.forEach(folder => {
-          folder.files.forEach(file => {
-            if (file.name.toLowerCase().includes(searchTerm)) {
-              found = true;
-              const a = document.createElement('a');
-              a.className = 'file-btn';
-              a.style.border = '2px solid ' + folder.color;
-              a.href = file.url;
-              a.target = '_blank';
-              a.innerHTML = `<span style="font-size:1.4rem;">${file.icon}</span> ${file.name} <br><small style="color: #888; font-weight: 400;">in ${folder.name}</small>`;
-              resultsList.appendChild(a);
-            }
-          });
-        });
-
-        if (!found) {
-          resultsList.innerHTML = '<p style="margin-top: 20px;">Nessun documento trovato.</p>';
-        }
-      }
-
       function openFolder(index) {
         var folder = allData.folders[index];
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
-        document.getElementById('search-results-view').style.display = 'none';
         document.getElementById('files-view').style.display = 'flex'; 
         document.getElementById('current-folder-title').innerText = folder.name;
         var list = document.getElementById('files-list');
@@ -316,16 +263,22 @@
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
         document.getElementById('install-view').style.display = 'flex';
-        document.getElementById('search-results-view').style.display = 'none';
+      }
+
+      function showGuide() {
+        document.getElementById('content-area').style.display = 'none';
+        document.getElementById('footer-actions').style.display = 'none';
+        document.getElementById('guide-view').style.display = 'flex';
+        document.querySelectorAll('.round-btn').forEach(b => b.style.display = 'none');
       }
 
       function showHome() {
         document.getElementById('files-view').style.display = 'none';
         document.getElementById('install-view').style.display = 'none';
-        document.getElementById('search-results-view').style.display = 'none';
+        document.getElementById('guide-view').style.display = 'none';
         document.getElementById('content-area').style.display = 'block';
         document.getElementById('footer-actions').style.display = 'block';
-        document.getElementById('search-input').value = '';
+        document.querySelectorAll('.round-btn').forEach(b => b.style.display = 'flex');
       }
 
       function shareLink() {
@@ -354,33 +307,23 @@
         overlay.style.display = 'flex';
       }
 
-      function closeTutorial() {
-        document.getElementById('tutorial-overlay').style.display = 'none';
-      }
+      function closeTutorial() { document.getElementById('tutorial-overlay').style.display = 'none'; }
 
       async function openEvents() {
         const container = document.getElementById('event-list-container');
         container.innerHTML = '<p style="color:white;">Caricamento eventi...</p>';
         document.getElementById('events-overlay').style.display = 'flex';
-
         try {
           const response = await fetch('eventi.json?v=' + Date.now());
           const eventi = await response.json();
           container.innerHTML = '';
-
           eventi.forEach(ev => {
             const div = document.createElement('div');
             div.className = 'event-item';
-            
-            let htmlContent = `
-              <span class="event-date">${ev.data}</span>
-              <span class="event-name">${ev.evento}</span>
-            `;
-
+            let htmlContent = `<span class="event-date">${ev.data}</span><span class="event-name">${ev.evento}</span>`;
             if (ev.note && ev.note.trim() !== "") {
               htmlContent += `<span style="display:block; margin-top:6px; font-size:0.85rem; color:#555; font-style:italic; line-height:1.2;">${ev.note}</span>`;
             }
-
             div.innerHTML = htmlContent;
             container.appendChild(div);
           });
@@ -389,9 +332,7 @@
         }
       }
 
-      function closeEvents() {
-        document.getElementById('events-overlay').style.display = 'none';
-      }
+      function closeEvents() { document.getElementById('events-overlay').style.display = 'none'; }
 
       fetchData();
     </script>
