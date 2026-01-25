@@ -61,7 +61,7 @@
   
   h1 { color: var(--title-color); font-size: 1.5rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
 
-  #search-container { width: 90%; max-width: 400px; margin: 15px 0 5px; position: relative; }
+  #search-container { width: 90%; max-width: 400px; margin: 20px 0 5px; position: relative; }
   #search-bar {
     width: 100%; padding: 10px 15px; border-radius: 25px; border: 2px solid var(--title-color);
     background: var(--search-bg); color: var(--text-color); font-family: 'Montserrat', sans-serif;
@@ -80,22 +80,21 @@
   .info-btn { left: 15px; }
   .theme-btn { right: 15px; }
 
-  /* Compattamento Area Contenuti */
   #content-area { 
     width: 90%; 
     max-width: 400px; 
-    margin-top: 10px; 
-    flex-grow: 0; /* Rimosso flex-grow per evitare distanziamento forzato */
+    margin-top: 20px; 
+    flex-grow: 0;
   }
   
-  #files-view, #install-view, #guide-view, #search-results { 
+  #files-view, #install-view, #search-results { 
     width: 90%; max-width: 400px; margin-top: 20px; 
   }
 
-  #files-view, #install-view, #guide-view, #search-results { display: none; flex-direction: column; align-items: center; }
+  #files-view, #install-view, #search-results { display: none; flex-direction: column; align-items: center; }
 
   .folder-btn, .file-btn, .device-btn {
-    display: block; width: 100%; padding: 14px; margin-bottom: 10px; /* Ridotto margine inferiore */
+    display: block; width: 100%; padding: 14px; margin-bottom: 10px;
     background-color: var(--btn-bg);
     border: 3px solid; border-radius: 15px; 
     font-size: 0.95rem; font-weight: 700; color: var(--text-color);
@@ -105,11 +104,10 @@
 
   #loader { margin-top: 50px; font-weight: bold; color: var(--title-color); font-size: 1.2rem; }
 
-  /* Compattamento Footer */
   .footer-container { 
     width: 90%; 
     max-width: 400px; 
-    margin-top: 5px; /* Spazio ridotto dalle cartelle */
+    margin-top: 10px; 
     padding-bottom: 30px; 
   }
   
@@ -135,16 +133,17 @@
   }
 
   .guide-card {
-    background: var(--btn-bg); width: 100%; padding: 15px; border-radius: 15px;
-    text-align: left; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background: white; width: 100%; padding: 15px; border-radius: 12px;
+    text-align: left; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    color: #333; box-sizing: border-box;
   }
-  .guide-card b { color: var(--title-color); display: block; margin-bottom: 5px; text-transform: uppercase; }
+  .guide-card b { color: #0056b3; display: block; margin-bottom: 5px; text-transform: uppercase; }
 
-  #tutorial-overlay, #events-overlay {
+  #tutorial-overlay, #events-overlay, #guide-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
   }
-  #tutorial-content { 
+  #tutorial-content, #guide-content { 
     width: 95%; 
     max-width: 550px; 
     position: relative; 
@@ -157,7 +156,7 @@
     border-radius: 30px; font-weight: bold; cursor: pointer; border: none; flex-shrink: 0;
   }
 
-  #event-list-container { max-height: 80vh; overflow-y: auto; width: 100%; padding: 10px; box-sizing: border-box; }
+  #event-list-container, #guide-list-container { max-height: 70vh; overflow-y: auto; width: 100%; padding: 10px; box-sizing: border-box; }
   .event-item {
     background: white; margin-bottom: 12px; padding: 18px;
     border-radius: 12px; text-align: left; border-left: 6px solid #0056b3; color: #333;
@@ -175,7 +174,7 @@
 </head>
 <body>
     <header>
-      <button class="round-btn info-btn" onclick="showGuide()">?</button>
+      <button class="round-btn info-btn" onclick="openGuide()">?</button>
       <button class="round-btn theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙</button>
       <img id="main-icon" src="iconaweb.png" alt="Icona Web">
       <h1>Tabella Informazioni<br>Castelsardo</h1>
@@ -193,20 +192,6 @@
     </div>
 
     <div id="content-area"></div>
-
-    <div id="guide-view">
-        <button class="back-arrow" onclick="showHome()">&#8592;</button>
-        <h2 style="color:var(--title-color); font-size: 1.3rem; margin-bottom: 20px;">GUIDA ALLE FUNZIONI</h2>
-        <div class="guide-card"><b>Ricerca</b> Digita il nome di un documento per trovarlo subito tra tutte le cartelle.</div>
-        <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti Drive (programmi, organigrammi, lettere, ecc).</div>
-        <div class="guide-card"><b>Luna / Sole</b> Attiva la Modalità Notte per riposare gli occhi o la Modalità Giorno per massima chiarezza.</div>
-        <div class="guide-card"><b>Date Importanti</b> Calendario degli eventi teocratici della congregazione.</div>
-        <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente ZOOM per seguire le adunanze.</div>
-        <div class="guide-card"><b>Pulsante INVITA</b> Condivide rapidamente il link Zoom delle adunanze.</div>
-        <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto di servizio.</div>
-        <div class="guide-card"><b>Pulsante JW.ORG</b> Accesso al sito ufficiale dei Testimoni di Geova.</div>
-        <div class="guide-card"><b>Come installare App</b> Visualizza le istruzioni per aggiungere questa pagina alla schermata Home del tuo telefono.</div>
-    </div>
 
     <div id="install-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
@@ -227,6 +212,24 @@
             <h2 style="color: white; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4rem;">Date Importanti</h2>
             <div id="event-list-container"></div>
             <button class="close-popup" onclick="closeEvents()">CHIUDI</button>
+        </div>
+    </div>
+
+    <div id="guide-overlay">
+        <div id="guide-content">
+            <h2 style="color: white; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4rem;">Guida alle Funzioni</h2>
+            <div id="guide-list-container">
+                <div class="guide-card"><b>Ricerca</b> Digita il nome di un documento per trovarlo subito tra tutte le cartelle.</div>
+                <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti Drive (programmi, organigrammi, lettere, ecc).</div>
+                <div class="guide-card"><b>Luna / Sole</b> Attiva la Modalità Notte per riposare gli occhi o la Modalità Giorno per massima chiarezza.</div>
+                <div class="guide-card"><b>Date Importanti</b> Calendario degli eventi teocratici della congregazione.</div>
+                <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente ZOOM per seguire le adunanze.</div>
+                <div class="guide-card"><b>Pulsante INVITA</b> Condivide rapidamente il link Zoom delle adunanze.</div>
+                <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto di servizio.</div>
+                <div class="guide-card"><b>Pulsante JW.ORG</b> Accesso al sito ufficiale dei Testimoni di Geova.</div>
+                <div class="guide-card"><b>Come installare App</b> Visualizza le istruzioni per aggiungere questa pagina alla schermata Home del tuo telefono.</div>
+            </div>
+            <button class="close-popup" onclick="closeGuide()">CHIUDI</button>
         </div>
     </div>
 
@@ -359,19 +362,18 @@
         document.getElementById('install-view').style.display = 'flex';
       }
 
-      function showGuide() {
-        document.getElementById('content-area').style.display = 'none';
-        document.getElementById('footer-actions').style.display = 'none';
-        document.getElementById('search-results').style.display = 'none';
-        document.getElementById('guide-view').style.display = 'flex';
-        document.querySelectorAll('.round-btn').forEach(b => b.style.display = 'none');
+      function openGuide() {
+        document.getElementById('guide-overlay').style.display = 'flex';
+      }
+
+      function closeGuide() {
+        document.getElementById('guide-overlay').style.display = 'none';
       }
 
       function showHome() {
         document.getElementById('search-bar').value = '';
         document.getElementById('files-view').style.display = 'none';
         document.getElementById('install-view').style.display = 'none';
-        document.getElementById('guide-view').style.display = 'none';
         document.getElementById('search-results').style.display = 'none';
         document.getElementById('content-area').style.display = 'block';
         document.getElementById('footer-actions').style.display = 'block';
@@ -434,4 +436,5 @@
       fetchData();
     </script>
 </body>
-</html>
+    </html>
+                                            
