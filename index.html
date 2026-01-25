@@ -425,15 +425,18 @@
           const eventi = await response.json();
           container.innerHTML = '';
           eventi.forEach(ev => {
-            const div = document.createElement('div');
-            div.className = 'event-item';
-            let htmlContent = `<span class="event-date">${ev.data}</span><span class="event-name">${ev.evento}</span>`;
-            if (ev.note && ev.note.trim() !== "") {
-              htmlContent += `<span style="display:block; margin-top:6px; font-size:0.85rem; color:#555; font-style:italic; line-height:1.2;">${ev.note}</span>`;
-            }
-            div.innerHTML = htmlContent;
-            container.appendChild(div);
-          });
+  const div = document.createElement('div');
+  div.className = 'event-item';
+  // Entrambi i campi ora supportano l'andata a capo con \n
+  let htmlContent = `<span class="event-date">${ev.data}</span>
+                     <span class="event-name" style="white-space: pre-line;">${ev.evento}</span>`;
+  
+  if (ev.note && ev.note.trim() !== "") {
+    htmlContent += `<span style="display:block; margin-top:6px; font-size:0.85rem; color:#555; font-style:italic; line-height:1.2; white-space: pre-line;">${ev.note}</span>`;
+  }
+  div.innerHTML = htmlContent;
+  container.appendChild(div);
+});
         } catch (error) {
           container.innerHTML = '<p style="color:white;">Errore nel caricamento dei dati.</p>';
         }
