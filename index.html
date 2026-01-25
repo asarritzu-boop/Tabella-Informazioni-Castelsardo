@@ -27,6 +27,7 @@
     --btn-bg: rgba(255, 255, 255, 0.85);
     --btn-border: #e0e0e0;
     --secondary-btn-text: #546e7a;
+    --search-bg: #fff;
   }
 
   .dark-mode {
@@ -36,6 +37,7 @@
     --btn-bg: rgba(40, 40, 40, 0.9);
     --btn-border: #444;
     --secondary-btn-text: #ffffff;
+    --search-bg: #333;
   }
 
   body {
@@ -48,7 +50,6 @@
 
   header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
   
-  /* Modifica Icona: più grande e con ombra superiore/diffusa */
   #main-icon { 
     max-width: 110px; 
     height: auto; 
@@ -57,6 +58,14 @@
   }
   
   h1 { color: var(--title-color); font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
+
+  /* Stile Barra di Ricerca */
+  #search-container { width: 90%; max-width: 400px; margin: 20px 0 10px; position: relative; }
+  #search-bar {
+    width: 100%; padding: 12px 15px; border-radius: 25px; border: 2px solid var(--title-color);
+    background: var(--search-bg); color: var(--text-color); font-family: 'Montserrat', sans-serif;
+    box-sizing: border-box; outline: none; font-size: 1rem;
+  }
 
   .round-btn {
     position: absolute; top: 20px; width: 40px; height: 40px; border-radius: 50%;
@@ -70,11 +79,11 @@
   .info-btn { left: 20px; }
   .theme-btn { right: 20px; }
 
-  #content-area, #files-view, #install-view, #guide-view { 
+  #content-area, #files-view, #install-view, #guide-view, #search-results { 
     width: 90%; max-width: 400px; margin-top: 20px; 
   }
 
-  #files-view, #install-view, #guide-view { display: none; flex-direction: column; align-items: center; }
+  #files-view, #install-view, #guide-view, #search-results { display: none; flex-direction: column; align-items: center; }
 
   .folder-btn, .file-btn, .device-btn {
     display: block; width: 100%; padding: 16px; margin-bottom: 15px;
@@ -149,15 +158,25 @@
       <button class="round-btn theme-btn" onclick="toggleTheme()" id="theme-toggle">🌙</button>
       <img id="main-icon" src="iconaweb.png" alt="Icona Web">
       <h1>Tabella Informazioni<br>Castelsardo</h1>
+      
+      <div id="search-container">
+        <input type="text" id="search-bar" placeholder="Cerca un documento..." oninput="handleSearch()">
+      </div>
     </header>
 
     <div id="loader">Connessione al Drive...</div>
+
+    <div id="search-results">
+        <h2 style="color:var(--title-color); font-size: 1.2rem; margin-bottom: 20px;">RISULTATI RICERCA</h2>
+        <div id="search-list" style="width: 100%;"></div>
+    </div>
 
     <div id="content-area"></div>
 
     <div id="guide-view">
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
         <h2 style="color:var(--title-color); font-size: 1.3rem; margin-bottom: 20px;">GUIDA ALLE FUNZIONI</h2>
+        <div class="guide-card"><b>Ricerca</b> Digita il nome di un documento per trovarlo subito tra tutte le cartelle.</div>
         <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti Drive (Cantiere, Territori, ecc).</div>
         <div class="guide-card"><b>Luna / Sole</b> Attiva la Modalità Notte per riposare gli occhi o la Modalità Giorno per massima chiarezza.</div>
         <div class="guide-card"><b>Date Importanti</b> Calendario delle scadenze e degli eventi della congregazione.</div>
@@ -245,10 +264,55 @@
         });
       }
 
+      function handleSearch() {
+        const query = document.getElementById('search-bar').value.toLowerCase();
+        const resultsArea = document.getElementById('search-results');
+        const resultsList = document.getElementById('search-list');
+        const contentArea = document.getElementById('content-area');
+        const footer = document.getElementById('footer-actions');
+        const filesView = document.getElementById('files-view');
+
+        if (query.length < 2) {
+          resultsArea.style.display = 'none';
+          if (filesView.style.display !== 'flex') {
+            contentArea.style.display = 'block';
+            footer.style.display = 'block';
+          }
+          return;
+        }
+
+        contentArea.style.display = 'none';
+        footer.style.display = 'none';
+        filesView.style.display = 'none';
+        resultsArea.style.display = 'flex';
+        resultsList.innerHTML = '';
+
+        let found = false;
+        allData.folders.forEach(folder => {
+          folder.files.forEach(file => {
+            if (file.name.toLowerCase().includes(query)) {
+              found = true;
+              const a = document.createElement('a');
+              a.className = 'file-btn';
+              a.style.border = '2px solid ' + folder.color;
+              a.href = file.url;
+              a.target = '_blank';
+              a.innerHTML = `<span style="font-size:1.2rem;">${file.icon}</span> ${file.name} <br><small style="font-weight:400; font-size:0.7rem; opacity:0.7;">in ${folder.name}</small>`;
+              resultsList.appendChild(a);
+            }
+          });
+        });
+
+        if (!found) {
+          resultsList.innerHTML = '<p style="margin-top:20px;">Nessun documento trovato.</p>';
+        }
+      }
+
       function openFolder(index) {
         var folder = allData.folders[index];
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
+        document.getElementById('search-results').style.display = 'none';
         document.getElementById('files-view').style.display = 'flex'; 
         document.getElementById('current-folder-title').innerText = folder.name;
         var list = document.getElementById('files-list');
@@ -267,20 +331,24 @@
       function showInstallScreen() {
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
+        document.getElementById('search-results').style.display = 'none';
         document.getElementById('install-view').style.display = 'flex';
       }
 
       function showGuide() {
         document.getElementById('content-area').style.display = 'none';
         document.getElementById('footer-actions').style.display = 'none';
+        document.getElementById('search-results').style.display = 'none';
         document.getElementById('guide-view').style.display = 'flex';
         document.querySelectorAll('.round-btn').forEach(b => b.style.display = 'none');
       }
 
       function showHome() {
+        document.getElementById('search-bar').value = '';
         document.getElementById('files-view').style.display = 'none';
         document.getElementById('install-view').style.display = 'none';
         document.getElementById('guide-view').style.display = 'none';
+        document.getElementById('search-results').style.display = 'none';
         document.getElementById('content-area').style.display = 'block';
         document.getElementById('footer-actions').style.display = 'block';
         document.querySelectorAll('.round-btn').forEach(b => b.style.display = 'flex');
