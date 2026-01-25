@@ -46,6 +46,8 @@
     display: flex; flex-direction: column; align-items: center; text-align: center;
     color: var(--text-color);
     transition: background 0.3s ease;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: antialiased;
   }
 
   header { padding-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; }
@@ -59,7 +61,7 @@
   
   h1 { color: var(--title-color); font-size: 1.6rem; font-weight: 700; margin: 0; text-transform: uppercase; line-height: 1.1; }
 
-  /* Stile Barra di Ricerca */
+  /* Barra di Ricerca */
   #search-container { width: 90%; max-width: 400px; margin: 20px 0 10px; position: relative; }
   #search-bar {
     width: 100%; padding: 12px 15px; border-radius: 25px; border: 2px solid var(--title-color);
@@ -82,6 +84,8 @@
   #content-area, #files-view, #install-view, #guide-view, #search-results { 
     width: 90%; max-width: 400px; margin-top: 20px; 
   }
+  
+  #content-area { contain: content; min-height: 300px; }
 
   #files-view, #install-view, #guide-view, #search-results { display: none; flex-direction: column; align-items: center; }
 
@@ -125,25 +129,32 @@
   }
   .guide-card b { color: var(--title-color); display: block; margin-bottom: 5px; text-transform: uppercase; }
 
+  /* OVERLAY ESTESO PER DATE IMPORTANTI */
   #tutorial-overlay, #events-overlay {
     display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0,0,0,0.9); z-index: 1000; flex-direction: column; align-items: center; justify-content: center;
   }
-  #tutorial-content { width: 90%; max-width: 400px; position: relative; }
+  #tutorial-content { 
+    width: 95%; 
+    max-width: 550px; 
+    position: relative; 
+    display: flex; flex-direction: column; align-items: center;
+  }
   #tutorial-media { width: 100%; border-radius: 10px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
   
   .close-popup {
-    margin-top: 20px; padding: 12px 25px; background: #fff; color: #333;
-    border-radius: 30px; font-weight: bold; cursor: pointer; border: none;
+    margin-top: 15px; padding: 12px 30px; background: #fff; color: #333;
+    border-radius: 30px; font-weight: bold; cursor: pointer; border: none; flex-shrink: 0;
   }
 
-  #event-list-container { max-height: 50vh; overflow-y: auto; width: 100%; }
+  #event-list-container { max-height: 80vh; overflow-y: auto; width: 100%; padding: 10px; box-sizing: border-box; }
   .event-item {
-    background: white; margin-bottom: 10px; padding: 15px;
-    border-radius: 10px; text-align: left; border-left: 5px solid #0056b3; color: #333;
+    background: white; margin-bottom: 12px; padding: 18px;
+    border-radius: 12px; text-align: left; border-left: 6px solid #0056b3; color: #333;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   }
-  .event-date { font-weight: bold; color: #0056b3; font-size: 0.9rem; display: block; }
-  .event-name { color: #333; margin-top: 4px; display: block; font-weight: 700; }
+  .event-date { font-weight: bold; color: #0056b3; font-size: 1rem; display: block; }
+  .event-name { color: #333; margin-top: 4px; display: block; font-weight: 700; font-size: 1.1rem; }
 
   .back-arrow {
     font-size: 1.5rem; cursor: pointer; margin-bottom: 20px;
@@ -177,14 +188,14 @@
         <button class="back-arrow" onclick="showHome()">&#8592;</button>
         <h2 style="color:var(--title-color); font-size: 1.3rem; margin-bottom: 20px;">GUIDA ALLE FUNZIONI</h2>
         <div class="guide-card"><b>Ricerca</b> Digita il nome di un documento per trovarlo subito tra tutte le cartelle.</div>
-        <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti del Drive della congregazione.</div>
+        <div class="guide-card"><b>Cartelle Colorate</b> Accesso ai documenti Drive (Cantiere, Territori, ecc).</div>
         <div class="guide-card"><b>Luna / Sole</b> Attiva la Modalità Notte per riposare gli occhi o la Modalità Giorno per massima chiarezza.</div>
         <div class="guide-card"><b>Date Importanti</b> Calendario delle scadenze e degli eventi della congregazione.</div>
-        <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente ZOOM per le adunanze.</div>
+        <div class="guide-card"><b>Pulsante ZOOM</b> Apre direttamente l'app per le adunanze.</div>
         <div class="guide-card"><b>Pulsante INVITA</b> Condivide rapidamente il link Zoom della congregazione.</div>
-        <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto di servizio.</div>
+        <div class="guide-card"><b>Pulsante RAPPORTINO</b> Modulo online per l'invio del rapporto mensile.</div>
         <div class="guide-card"><b>Pulsante JW.ORG</b> Accesso al sito ufficiale dei Testimoni di Geova.</div>
-        <div class="guide-card"><b>Come installare App</b> Visualizza le istruzioni visive per aggiungere questa pagina alla schermata Home del tuo telefono.</div>
+        <div class="guide-card"><b>Come installare App</b> Visualizza le istruzioni per aggiungere questa pagina alla schermata Home del tuo telefono.</div>
     </div>
 
     <div id="install-view">
@@ -203,7 +214,7 @@
 
     <div id="events-overlay">
         <div id="tutorial-content">
-            <h2 style="color: white; margin-bottom: 20px;">DATE IMPORTANTI</h2>
+            <h2 style="color: white; margin-bottom: 15px; text-transform: uppercase; font-size: 1.4rem;">Date Importanti</h2>
             <div id="event-list-container"></div>
             <button class="close-popup" onclick="closeEvents()">CHIUDI</button>
         </div>
@@ -234,6 +245,9 @@
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxfkUp1NPrLdhLNjWhlyzBj--WhKLCIOt8xhwDd1MErMWUq0NLG64i0JtGXcrQqnVcO/exec";
       var allData = {};
 
+      // Ottimizzazione Caricamento: Avvio immediato del fetch
+      const dataPromise = fetch(SCRIPT_URL).then(res => res.json()).catch(() => null);
+
       function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const btn = document.getElementById('theme-toggle');
@@ -242,9 +256,9 @@
 
       async function fetchData() {
         try {
-          const response = await fetch(SCRIPT_URL);
-          const data = await response.json();
-          renderApp(data);
+          const data = await dataPromise;
+          if (data) renderApp(data);
+          else throw new Error();
         } catch (error) {
           document.getElementById('loader').innerText = "Errore caricamento dati.";
         }
